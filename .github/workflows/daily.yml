@@ -1,0 +1,37 @@
+name: Daily Quote
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install aiogram
+
+      - name: Run bot
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          MOM_ID: ${{ secrets.MOM_ID }}
+          YOUR_ID: ${{ secrets.YOUR_ID }}
+        run: python bot.py
+
+      - name: Save pointer
+        run: |
+          git config user.email "bot@github.com"
+          git config user.name "GitHub Actions"
+          git add pointer.txt
+          git diff --staged --quiet || git commit -m "update pointer"
+          git push
