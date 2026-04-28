@@ -72,6 +72,7 @@ async def send_daily_gift():
             
     except Exception as e:
         print(f"❌ Ошибка: {e}")
+        await bot.send_message(YOUR_ID, f"❌ Бот сломался: {e}")
     finally:
         await bot.session.close()
 
